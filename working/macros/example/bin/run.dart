@@ -18,13 +18,17 @@ void main() async {
   var bootstrapFile =
       File(dartToolDir.uri.resolve('bootstrap.dart').toFilePath());
   log('Bootstrapping macro program (${bootstrapFile.path}).');
-  var dataClassUri = Uri.parse('package:macro_proposal/data_class.dart');
+  var dataClassUri = Uri.parse('package:macro_proposal/hello.dart');
   var bootstrapContent = bootstrapMacroIsolate({
     dataClassUri.toString(): {
-      'DataClass': [''],
+      'Hello': [''],
     }
   }, SerializationMode.byteDataClient);
-  bootstrapFile.writeAsStringSync(bootstrapContent);
+  bootstrapFile.writeAsStringSync(bootstrapContent
+      .replaceAll('Macro Function()', 'dynamic')
+      .replaceAllMapped(RegExp(r'var result = [^;]+;'),
+          (match) => '${match.group(0)}\nprint(result);'));
+
   var bootstrapKernelFile =
       File(bootstrapFile.uri.resolve('bootstrap.dart.dill').toFilePath());
 
@@ -48,7 +52,7 @@ void main() async {
     '--source',
     bootstrapFile.path,
     '--source',
-    'lib/data_class.dart',
+    'lib/hello.dart',
     for (var source in await _allSources(feAnalyzerSharedRoot.path))
       '--source=$source',
     '--packages-file=.dart_tool/package_config.json',
@@ -58,7 +62,7 @@ void main() async {
     return;
   }
 
-  var output = File(dartToolDir.uri.resolve('user_main.dill').toFilePath());
+  var output = File(dartToolDir.uri.resolve('user_main_2.dill').toFilePath());
   log('Building main program to kernel (${output.path})');
   var snapshotResult = await computeKernel([
     '--enable-experiment=macros',
@@ -73,7 +77,7 @@ void main() async {
     '--output',
     output.path,
     '--source',
-    Platform.script.resolve('user_main.dart').toFilePath(),
+    Platform.script.resolve('user_main_2.dart').toFilePath(),
     '--packages-file=.dart_tool/package_config.json',
     '--precompiled-macro-format=kernel',
     '--precompiled-macro',
