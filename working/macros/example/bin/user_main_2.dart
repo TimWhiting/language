@@ -9,6 +9,7 @@ void main(List<String> arguments) {
 class Class2 {}
 
 abstract class MyClass extends Class2 {
-  @Hello('Named')
+  MyClass();
+  @Hello()
   external factory MyClass.named(String val, int val2);
 }

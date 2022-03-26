@@ -26,8 +26,10 @@ void main() async {
   }, SerializationMode.byteDataClient);
   bootstrapFile.writeAsStringSync(bootstrapContent
       .replaceAll('Macro Function()', 'dynamic')
-      .replaceAllMapped(RegExp(r'var result = [^;]+;'),
-          (match) => '${match.group(0)}\nprint(result);'));
+      .replaceAllMapped(
+          RegExp(r'var result = [^;]+;'),
+          (match) =>
+              '${match.group(0)}\nprint(result.newTypeNames);print(result.libraryAugmentations);print(result.classAugmentations);'));
 
   var bootstrapKernelFile =
       File(bootstrapFile.uri.resolve('bootstrap.dart.dill').toFilePath());

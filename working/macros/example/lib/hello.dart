@@ -6,13 +6,12 @@ import 'dart:async';
 import 'package:_fe_analyzer_shared/src/macros/api.dart';
 
 macro class Hello implements  ConstructorTypesMacro, ConstructorDefinitionMacro, ConstructorDeclarationsMacro {
-  const Hello(this.type);
-  final String type;
-  
+  const Hello();
+final type = 'Named';  
   @override
   FutureOr<void> buildTypesForConstructor(ConstructorDeclaration constructor, TypeBuilder builder) {
 
-    builder.declareType(type, DeclarationCode.fromParts(['class ', type,  ' extends ' , constructor.returnType.code, ' {\n' , 
+    builder.declareType(type, DeclarationCode.fromParts(['class ', type,  ' extends ' , constructor.definingClass, ' {\n' , 
     type, '(',  for (final field in constructor.positionalParameters)  ...['this.', field.identifier ,','], ');\n', 
     for (final field in constructor.positionalParameters) ...[
      'final ', field.type.code,' ', field.identifier, ';\n'],
@@ -22,7 +21,7 @@ macro class Hello implements  ConstructorTypesMacro, ConstructorDefinitionMacro,
   
   @override
   FutureOr<void> buildDefinitionForConstructor(ConstructorDeclaration constructor, ConstructorDefinitionBuilder builder) {
-    builder.augment(body: FunctionBodyCode.fromString('= $type;'));
+    builder.augment(body: FunctionBodyCode.fromParts(['=> $type(', for (final field in constructor.positionalParameters) ...[field.identifier,','], ');']));
   }
   
   @override
