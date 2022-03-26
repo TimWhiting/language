@@ -7,7 +7,7 @@ import 'package:_fe_analyzer_shared/src/macros/api.dart';
 
 macro class Hello implements  ConstructorTypesMacro, ConstructorDefinitionMacro, ConstructorDeclarationsMacro {
   const Hello();
-final type = 'Named';  
+final String type = 'Named';  
   @override
   FutureOr<void> buildTypesForConstructor(ConstructorDeclaration constructor, TypeBuilder builder) {
 
